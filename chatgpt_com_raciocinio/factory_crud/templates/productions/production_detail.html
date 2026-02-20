@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Produção #{{ production.id }} • Factory CRUD{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <div>
+      <h1 class="h1">Produção #{{ production.id }}</h1>
+      <p class="muted">{{ production.description }}</p>
+    </div>
+    <div class="actions">
+      {% if production.status == "STANDBY" %}
+        <form method="post" action="{% url 'production_start' production.id %}">
+          {% csrf_token %}
+          <button class="btn btn-primary" type="submit">Iniciar</button>
+        </form>
+      {% endif %}
+
+      {% if production.status != "FINISHED" and production.status != "CANCELED" %}
+        <form method="post" action="{% url 'production_finish' production.id %}">
+          {% csrf_token %}
+          <button class="btn btn-success" type="submit">Finalizar Produção</button>
+        </form>
+
+        <form method="post" action="{% url 'production_cancel' production.id %}">
+          {% csrf_token %}
+          <button class="btn btn-danger js-confirm" data-confirm="Cancelar a produção irá cancelar TODAS as máquinas associadas. Confirmar?" type="submit">
+            Cancelar Produção
+          </button>
+        </form>
+      {% endif %}
+
+      <a class="btn btn-secondary" href="{% url 'production_list' %}">Voltar</a>
+    </div>
+  </div>
+
+  <div class="meta">
+    <div><strong>Status:</strong> <span class="badge badge-{{ production.status|lower }}">{{ production.status }}</span></div>
+    <div><strong>Quantidade:</strong> {{ production.quantity }}</div>
+    <div><strong>Início:</strong> {{ production.started_at|default:"-" }}</div>
+    <div><strong>Fim:</strong> {{ production.finished_at|default:"-" }}</div>
+    <div><strong>Cancelamento:</strong> {{ production.canceled_at|default:"-" }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="h2">Máquinas associadas</h2>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Máquina</th>
+          <th>Status</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th>Cancelamento</th>
+          <th>Working time (min)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pm in machines %}
+          <tr>
+            <td>{{ pm.machine.model }} / {{ pm.machine.serialnumber }}</td>
+            <td><span class="badge badge-{{ pm.status|lower }}">{{ pm.status }}</span></td>
+            <td>{{ pm.started_at|default:"-" }}</td>
+            <td>{{ pm.finished_at|default:"-" }}</td>
+            <td>{{ pm.canceled_at|default:"-" }}</td>
+            <td><strong>{{ pm.working_time }}</strong></td>
+            <td>
+              {% if production.status != "FINISHED" and production.status != "CANCELED" %}
+                {% if production.status == "ONGOING" %}
+                  {% if pm.status != "FINISHED" and pm.status != "CANCELED" %}
+                    <div class="row-actions">
+                      <form method="post" action="{% url 'production_machine_finish' production.id pm.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success" type="submit">
+                          Finalizar Máquina
+                        </button>
+                      </form>
+
+                      {% if machines|length > 1 %}
+                        <form method="post" action="{% url 'production_machine_cancel' production.id pm.id %}">
+                          {% csrf_token %}
+                          <button class="btn btn-danger js-confirm"
+                                  data-confirm="Cancelar execução desta máquina sem alterar a produção e as outras máquinas. Confirmar?"
+                                  type="submit">
+                            Cancelar Máquina
+                          </button>
+                        </form>
+                      {% else %}
+                        <span class="muted">Para cancelar, use “Cancelar Produção”.</span>
+                      {% endif %}
+                    </div>
+                  {% else %}
+                    <span class="muted">Sem ação</span>
+                  {% endif %}
+                {% else %}
+                  <span class="muted">Inicie a produção para gerenciar máquinas</span>
+                {% endif %}
+              {% else %}
+                <span class="muted">Produção encerrada</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="muted">Nenhuma máquina associada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="muted small">
+    Regra: A produção só pode ser FINALIZADA quando todas as máquinas associadas estiverem com status diferente de STANDBY e ONGOING.
+  </p>
+</div>
+{% endblock %}

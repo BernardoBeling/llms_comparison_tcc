@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <h2>Minhas Máquinas ({{ machines.count }}/{{ limit }})</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Modelo</th>
+                <th>Número de Série</th>
+                <th>Data Cadastro</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for machine in machines %}
+            <tr>
+                <td>{{ machine.model }}</td>
+                <td>{{ machine.serialnumber }}</td>
+                <td>{{ machine.created_at|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Nenhuma máquina cadastrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if machines.count < limit %}
+<div class="card">
+    <h3>Adicionar Nova Máquina</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Salvar Máquina</button>
+    </form>
+</div>
+{% else %}
+<div class="card">
+    <p>Você atingiu o limite máximo de {{ limit }} máquinas.</p>
+</div>
+{% endif %}
+{% endblock %}

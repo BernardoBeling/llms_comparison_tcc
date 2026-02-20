@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Produções{% endblock %}
+
+{% block content %}
+  <h1>Cadastro de Produções</h1>
+
+  <div class="card">
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="field">
+        <label for="id_description">Descrição</label>
+        {{ form.description }}
+        {{ form.description.errors }}
+      </div>
+
+      <div class="field">
+        <label for="id_quantity">Quantidade</label>
+        {{ form.quantity }}
+        {{ form.quantity.errors }}
+      </div>
+
+      <div class="field">
+        <label>Máquinas disponíveis</label>
+        {% if form.machines.field.queryset %}
+          <div class="checkbox-list">
+            {% for checkbox in form.machines %}
+              <label class="checkbox-item">
+                {{ checkbox.tag }}
+                <span>{{ checkbox.choice_label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">Nenhuma máquina disponível para seleção.</p>
+        {% endif %}
+        {{ form.machines.errors }}
+      </div>
+
+      <button class="btn" type="submit">Cadastrar produção</button>
+      <p class="muted">Não é permitido cadastrar produção sem máquinas. Só aparecem máquinas disponíveis e de sua propriedade.</p>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    <h2 style="margin: 0 0 10px 0;">Minhas produções</h2>
+
+    {% if productions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+            <th>Status</th>
+            <th>Máquinas (working_time)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in productions %}
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td>{{ p.description }}</td>
+              <td>{{ p.quantity }}</td>
+              <td><span class="badge badge--{{ p.status }}">{{ p.status }}</span></td>
+              <td>
+                {% if p.production_machines.all %}
+                  <div style="display:grid; gap:6px;">
+                    {% for pm in p.production_machines.all %}
+                      <div>
+                        <span class="badge badge--{{ pm.status }}">{{ pm.machine.model }} / {{ pm.machine.serialnumber }}</span>
+                        <span class="muted">— {{ pm.working_time }} min</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <span class="muted">-</span>
+                {% endif %}
+              </td>
+              <td><a class="btn btn--ghost" href="{% url 'production_detail' production_id=p.id %}">Abrir</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhuma produção cadastrada ainda.</p>
+    {% endif %}
+  </div>
+{% endblock %}

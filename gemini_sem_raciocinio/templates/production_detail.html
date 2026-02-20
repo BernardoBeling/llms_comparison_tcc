@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Produção: {{ production.description }}</h2>
+        <span class="badge" style="background: {% if production.status == 'ONGOING' %}#3498db{% elif production.status == 'FINISHED' %}#27ae60{% else %}#e74c3c{% endif %}; color: white;">
+            {{ production.status }}
+        </span>
+    </div>
+    <p>Iniciada em: {{ production.started_at|date:"d/m/Y H:i" }}</p>
+    <hr>
+
+    <h3>Máquinas Alocadas</h3>
+    <table>
+    <thead>
+        <tr>
+            <th>Máquina (Modelo/Serial)</th>
+            <th>Status</th>
+            <th>Tempo de Operação</th> <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.machine.model }} / {{ item.machine.serialnumber }}</td>
+            <td><span class="badge">{{ item.status }}</span></td>
+            <td>
+                <strong style="color: var(--primary);">{{ item.working_time }} min</strong>
+            </td>
+            <td>
+                {% if item.status == 'STANDBY' or item.status == 'ONGOING' %}
+                    <a href="{% url 'machine_finish' item.pk %}" class="btn btn-green">Finalizar</a>
+                    <a href="{% url 'machine_cancel' item.pk %}" class="btn btn-red">Cancelar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #eee;">
+        {% if can_finish %}
+            <div class="card" style="background: #e8f5e9; border: 1px solid #27ae60;">
+                <p><strong>Aviso:</strong> Todas as máquinas completaram suas atividades. Você já pode finalizar a produção geral.</p>
+                <form action="{% url 'production_finish' production.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-green" style="width: 100%; padding: 1rem; font-weight: bold;">
+                        FINALIZAR PRODUÇÃO GERAL
+                    </button>
+                </form>
+            </div>
+        {% elif production.status == 'ONGOING' %}
+            <p style="color: #7f8c8d;"><i>Para finalizar a produção global, finalize ou cancele cada máquina individualmente primeiro.</i></p>
+            <a href="{% url 'production_cancel' production.pk %}" class="btn btn-red" onclick="return confirm('Deseja cancelar a produção toda?')">
+                CANCELAR PRODUÇÃO COMPLETA
+            </a>
+        {% endif %}
+        
+        <br>
+        <a href="{% url 'dashboard' %}" class="btn btn-blue" style="background: #7f8c8d; margin-top: 1rem;">Voltar ao Dashboard</a>
+    </div>
+</div>
+{% endblock %}

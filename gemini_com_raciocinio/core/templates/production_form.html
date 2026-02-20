@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: auto;">
+    <h2>Cadastrar Produção</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Descrição</label>
+            <input type="text" name="description" required>
+        </div>
+        <div>
+            <label>Quantidade</label>
+            <input type="number" name="quantity" required>
+        </div>
+        <div>
+            <label>Selecionar Máquinas Disponíveis</label>
+            <div class="checkbox-group">
+                {% for m in machines %}
+                <label style="display: block; margin-bottom: 8px;">
+                    <input type="checkbox" name="machines" value="{{ m.id }}" style="width: auto;">
+                    {{ m.model|upper }} / {{ m.serialnumber }}
+                </label>
+                {% empty %}
+                <p style="color: red;">Nenhuma máquina disponível no momento.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-green">Salvar Produção</button>
+        <a href="{% url 'dashboard' %}" class="btn">Voltar</a>
+    </form>
+</div>
+{% endblock %}

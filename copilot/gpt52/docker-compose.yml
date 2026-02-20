@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    container_name: crud-fabrica-web
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      SQLITE_PATH: "/app/data/db.sqlite3"
+      # Opcional: defina uma chave segura em produção
+      # DJANGO_SECRET_KEY: "troque-esta-chave"
+    volumes:
+      - .:/app
+      - ./data:/app/data

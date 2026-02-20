@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar Máquina • Factory CRUD{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1 class="h1">Cadastrar Máquina</h1>
+  <p class="muted">Informe manualmente o modelo e o número de série.</p>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="form-errors">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="form-row">
+      <label for="{{ form.model.id_for_label }}">Modelo</label>
+      {{ form.model }}
+      {% if form.model.errors %}<div class="field-errors">{{ form.model.errors }}</div>{% endif %}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.serialnumber.id_for_label }}">Serialnumber</label>
+      {{ form.serialnumber }}
+      {% if form.serialnumber.errors %}<div class="field-errors">{{ form.serialnumber.errors }}</div>{% endif %}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a class="btn btn-secondary" href="{% url 'machine_list' %}">Voltar</a>
+  </form>
+</div>
+{% endblock %}

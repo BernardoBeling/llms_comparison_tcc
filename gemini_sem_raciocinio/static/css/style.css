@@ -1,0 +1,48 @@
+/* Variáveis Padrão (Light) */
+:root {
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-nav: #ffffff;
+    --text-main: #2c3e50;
+    --border-color: #dee2e6;
+    --primary: #3498db;
+    --success: #27ae60;
+    --danger: #e74c3c;
+}
+
+/* Variáveis Dark - Forçando especificidade com html */
+html[data-theme="dark"] {
+    --bg-body: #121212;
+    --bg-card: #1e1e1e;
+    --bg-nav: #2d2d2d;
+    --text-main: #f8f9fa;
+    --border-color: #444444;
+}
+
+/* Aplicação Global */
+body { 
+    background-color: var(--bg-body) !important; 
+    color: var(--text-main) !important; 
+    transition: background-color 0.2s ease;
+}
+
+nav { background-color: var(--bg-nav); border-bottom: 1px solid var(--border-color); }
+
+.card { 
+    background-color: var(--bg-card) !important; 
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color);
+}
+
+/* Garantindo que tabelas herdem a cor do tema */
+table, th, td { 
+    color: inherit; 
+    border-bottom-color: var(--border-color); 
+}
+
+/* Inputs e Forms para não sumirem no Dark Mode */
+input, select, textarea {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar Produção • Factory CRUD{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1 class="h1">Cadastrar Produção</h1>
+  <p class="muted">
+    Só aparecem máquinas <strong>disponíveis</strong> (do seu usuário e não vinculadas a outra produção ativa).
+  </p>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="form-errors">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="form-row">
+      <label for="{{ form.description.id_for_label }}">Descrição</label>
+      {{ form.description }}
+      {% if form.description.errors %}<div class="field-errors">{{ form.description.errors }}</div>{% endif %}
+    </div>
+
+    <div class="form-row">
+      <label for="{{ form.quantity.id_for_label }}">Quantidade</label>
+      {{ form.quantity }}
+      {% if form.quantity.errors %}<div class="field-errors">{{ form.quantity.errors }}</div>{% endif %}
+    </div>
+
+    <div class="form-row">
+      <label>Máquinas (checkboxes no formato "MODEL / SERIALNUMBER")</label>
+      <div class="checkbox-grid">
+        {{ form.machines }}
+      </div>
+      {% if form.machines.errors %}<div class="field-errors">{{ form.machines.errors }}</div>{% endif %}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Salvar Produção</button>
+    <a class="btn btn-secondary" href="{% url 'production_list' %}">Voltar</a>
+  </form>
+</div>
+{% endblock %}

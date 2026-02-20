@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dashboard • Factory CRUD{% endblock %}
+
+{% block content %}
+<h1 class="h1">Dashboard</h1>
+
+<div class="grid">
+  <div class="stat">
+    <div class="stat-label">Produções em andamento</div>
+    <div class="stat-value">{{ ongoing_count }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Máquinas totais</div>
+    <div class="stat-value">{{ machine_total }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Máquinas utilizadas (produções ativas)</div>
+    <div class="stat-value">{{ machine_used }}</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Máquinas disponíveis</div>
+    <div class="stat-value">{{ machine_available }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2 class="h2">Status de todas as produções</h2>
+    <div class="actions">
+      <a class="btn btn-secondary" href="{% url 'production_create' %}">Nova Produção</a>
+      <a class="btn btn-secondary" href="{% url 'machine_create' %}">Nova Máquina</a>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descrição</th>
+          <th>Status</th>
+          <th>Qtd.</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th>Cancelamento</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productions %}
+          <tr>
+            <td>#{{ p.id }}</td>
+            <td>{{ p.description }}</td>
+            <td><span class="badge badge-{{ p.status|lower }}">{{ p.status }}</span></td>
+            <td>{{ p.quantity }}</td>
+            <td>{{ p.started_at|default:"-" }}</td>
+            <td>{{ p.finished_at|default:"-" }}</td>
+            <td>{{ p.canceled_at|default:"-" }}</td>
+            <td><a class="link" href="{% url 'production_detail' p.id %}">Ver detalhes</a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="muted">Nenhuma produção cadastrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

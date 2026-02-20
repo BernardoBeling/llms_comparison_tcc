@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: django_app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    stdin_open: true # Mantém o processo aberto
+    tty: true        # Permite ver logs coloridos e interagir
+    command: >
+      sh -c "python manage.py makemigrations core &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"

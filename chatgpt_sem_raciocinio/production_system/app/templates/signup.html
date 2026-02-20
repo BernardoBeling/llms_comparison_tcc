@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cadastrar Usuário</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Cadastrar</button>
+</form>
+
+<p>
+    Já possui conta?
+    <a href="/login/">Faça login</a>
+</p>
+{% endblock %}

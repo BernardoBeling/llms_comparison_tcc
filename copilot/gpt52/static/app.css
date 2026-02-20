@@ -1,0 +1,212 @@
+:root {
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #0f172a;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --border: #243244;
+  --primary: #60a5fa;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --success: #22c55e;
+  --success-hover: #16a34a;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand a {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inline { display: inline; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+h1 { margin: 0 0 14px 0; font-size: 24px; }
+
+.form { display: grid; gap: 12px; }
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn--danger {
+  background: var(--danger);
+}
+
+.btn--danger:hover { background: var(--danger-hover); }
+
+.btn--success {
+  background: var(--success);
+}
+
+.btn--success:hover { background: var(--success-hover); }
+
+.muted { color: var(--muted); }
+
+.messages { margin: 14px 0; display: grid; gap: 8px; }
+
+.message {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.message--success { border-color: #bbf7d0; background: #f0fdf4; }
+.message--error { border-color: #fecaca; background: #fef2f2; }
+.message--warning { border-color: #fde68a; background: #fffbeb; }
+.message--info { border-color: #bfdbfe; background: #eff6ff; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.table th, .table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.stat__label { color: var(--muted); font-weight: 600; font-size: 12px; }
+.stat__value { font-size: 26px; font-weight: 800; margin-top: 4px; }
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.badge--STANDBY { background: #f1f5f9; }
+.badge--ONGOING { background: #e0f2fe; border-color: #bae6fd; }
+.badge--FINISHED { background: #dcfce7; border-color: #bbf7d0; }
+.badge--CANCELED { background: #fee2e2; border-color: #fecaca; }
+.badge--HALT { background: #fff7ed; border-color: #fed7aa; }
+
+.checkbox-list {
+  display: grid;
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}

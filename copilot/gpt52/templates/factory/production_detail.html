@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Produção #{{ production.id }}{% endblock %}
+
+{% block content %}
+  <h1>Produção #{{ production.id }}</h1>
+
+  <div class="card">
+    <p><strong>Descrição:</strong> {{ production.description }}</p>
+    <p><strong>Quantidade:</strong> {{ production.quantity }}</p>
+    <p><strong>Status:</strong> <span class="badge badge--{{ production.status }}">{{ production.status }}</span></p>
+
+    <div class="actions" style="margin-top: 10px;">
+      {% if production.status != 'FINISHED' and production.status != 'CANCELED' %}
+        <form method="post" action="{% url 'production_start' production_id=production.id %}">
+          {% csrf_token %}
+          <button class="btn btn--ghost" type="submit">Iniciar (ONGOING)</button>
+        </form>
+
+        <form method="post" action="{% url 'production_cancel' production_id=production.id %}">
+          {% csrf_token %}
+          <button class="btn btn--danger" data-confirm="Cancelar produção e todas as máquinas?" type="submit">Cancelar produção</button>
+        </form>
+
+        <form method="post" action="{% url 'production_finish' production_id=production.id %}">
+          {% csrf_token %}
+          <button class="btn btn--success" {% if not can_finish %}disabled{% endif %} data-confirm="Finalizar produção?" type="submit">Finalizar produção</button>
+        </form>
+      {% endif %}
+
+      {% if production.status == 'FINISHED' or production.status == 'CANCELED' %}
+        <form method="post" action="{% url 'production_delete' production_id=production.id %}">
+          {% csrf_token %}
+          <button class="btn btn--danger" data-confirm="Excluir (soft delete) esta produção?" type="submit">Excluir produção</button>
+        </form>
+      {% endif %}
+
+      <a class="btn btn--ghost" href="{% url 'production_list' %}">Voltar</a>
+    </div>
+
+    {% if production.status != 'FINISHED' and production.status != 'CANCELED' and not can_finish %}
+      <p class="muted" style="margin-top: 10px;">Para finalizar, todas as máquinas precisam estar em status diferente de STANDBY e ONGOING.</p>
+    {% endif %}
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    <h2 style="margin: 0 0 10px 0;">Máquinas associadas</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Máquina</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pm in pms %}
+          <tr>
+            <td>{{ pm.machine.model }} / {{ pm.machine.serialnumber }}</td>
+            <td><span class="badge badge--{{ pm.status }}">{{ pm.status }}</span></td>
+            <td>
+              <div class="actions">
+                {% if production.status != 'FINISHED' and production.status != 'CANCELED' %}
+                  <form method="post" action="{% url 'production_machine_finish' production_id=production.id pm_id=pm.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn--success" data-confirm="Marcar esta máquina como FINISHED?" type="submit">Finalizar máquina</button>
+                  </form>
+
+                  <form method="post" action="{% url 'production_machine_cancel' production_id=production.id pm_id=pm.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn--danger" data-confirm="Cancelar execução apenas desta máquina?" type="submit">Cancelar máquina</button>
+                  </form>
+                {% else %}
+                  <span class="muted">Sem ações (produção encerrada)</span>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

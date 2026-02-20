@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Máquinas{% endblock %}
+
+{% block content %}
+  <h1>Cadastro de Máquinas</h1>
+
+  <div class="card">
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="field">
+        <label for="id_model">Modelo</label>
+        {{ form.model }}
+        {{ form.model.errors }}
+      </div>
+
+      <div class="field">
+        <label for="id_serialnumber">Serial Number</label>
+        {{ form.serialnumber }}
+        {{ form.serialnumber.errors }}
+      </div>
+
+      <button class="btn" type="submit">Cadastrar máquina</button>
+      <p class="muted">Limite: 5 máquinas (ou 10 se usuário premium). Serial number não pode repetir.</p>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    <h2 style="margin: 0 0 10px 0;">Minhas máquinas</h2>
+
+    {% if machines %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Modelo</th>
+            <th>Serial</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in machines %}
+            <tr>
+              <td>#{{ m.id }}</td>
+              <td>{{ m.model }}</td>
+              <td>{{ m.serialnumber }}</td>
+              <td>
+                <form method="post" action="{% url 'machine_delete' machine_id=m.id %}">
+                  {% csrf_token %}
+                  <button class="btn btn--danger" data-confirm="Excluir esta máquina?" type="submit">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhuma máquina cadastrada ainda.</p>
+    {% endif %}
+  </div>
+{% endblock %}

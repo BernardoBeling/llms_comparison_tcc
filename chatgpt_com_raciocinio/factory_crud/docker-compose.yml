@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    container_name: factory_crud_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - sqlite_data:/app/db_data
+    environment:
+      - DJANGO_SETTINGS_MODULE=factory_manager.settings
+
+volumes:
+  sqlite_data:

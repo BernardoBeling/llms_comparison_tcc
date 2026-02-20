@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h2 style="margin: 0;">Painel de Controle</h2>
+        {% if is_premium %}
+            <span class="badge" style="background: gold; color: #000; font-weight: bold;">Usuário Premium</span>
+        {% endif %}
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'machine_create' %}" class="btn btn-blue">Adicionar Máquina</a>
+        <a href="{% url 'production_create' %}" class="btn btn-green">Nova Produção</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; border-top: 5px solid var(--primary);">
+        <small style="color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Produções Ativas</small>
+        <h1 style="margin: 10px 0; font-size: 2.5rem;">{{ ongoing_count }}</h1>
+    </div>
+    
+    <div class="card" style="text-align: center; border-top: 5px solid var(--success);">
+        <small style="color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Máquinas Disponíveis</small>
+        <h1 style="margin: 10px 0; font-size: 2.5rem;">{{ machines_available }}</h1>
+    </div>
+
+    <div class="card" style="text-align: center; border-top: 5px solid var(--danger);">
+        <small style="color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Máquinas em Uso</small>
+        <h1 style="margin: 10px 0; font-size: 2.5rem;">{{ machines_used }}</h1>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Histórico Recente</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th>Máquinas / Tempo de Operação</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prod in productions %}
+            <tr>
+                <td>{{ prod.description }}</td>
+                <td>
+                    <span class="badge" style="background: {% if prod.status == 'ONGOING' %}var(--primary){% elif prod.status == 'FINISHED' %}var(--success){% else %}var(--danger){% endif %}; color: white;">
+                        {{ prod.status }}
+                    </span>
+                </td>
+                <td>
+                    {% for pm in prod.productionmachine_set.all %}
+                        <div style="font-size: 0.85rem; border-bottom: 1px solid var(--border); padding: 4px 0;">
+                            {{ pm.machine.model }}: <strong>{{ pm.working_time }} min</strong>
+                        </div>
+                    {% empty %}
+                        <span style="color: var(--text-muted);">Nenhuma máquina vinculada</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{% url 'production_detail' prod.pk %}" class="btn btn-blue" style="font-size: 0.8rem; padding: 5px 10px;">Gerenciar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

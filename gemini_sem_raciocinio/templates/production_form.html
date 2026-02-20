@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: auto;">
+    <h2>Iniciar Nova Produção</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="card" style="background: #f9f9f9;">
+            {{ form.description.label_tag }}<br>{{ form.description }}<br><br>
+            {{ form.quantity.label_tag }}<br>{{ form.quantity }}
+        </div>
+        
+        <h3>Selecione as Máquinas (Requisito: MODEL / SERIALNUMBER)</h3>
+        <div style="margin: 1rem 0;">
+            {{ form.selected_machines }}
+        </div>
+        
+        <button type="submit" class="btn btn-green">Criar Produção</button>
+        <a href="{% url 'dashboard' %}" style="margin-left: 10px;">Voltar</a>
+    </form>
+</div>
+{% endblock %}

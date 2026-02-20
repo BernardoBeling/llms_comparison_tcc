@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: auto;">
+    <h2>Cadastrar Nova Máquina</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Modelo da Máquina</label>
+            <input type="text" name="model" placeholder="Ex: Torno CNC G3" required>
+        </div>
+        <div>
+            <label>Número de Série (Serial Number)</label>
+            <input type="text" name="serialnumber" placeholder="Ex: SN-2024-X123" required>
+        </div>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-green">Salvar Máquina</button>
+            <a href="{% url 'dashboard' %}" class="btn" style="background: #95a5a6; color: white;">Cancelar</a>
+        </div>
+    </form>
+    <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+        * Lembre-se: Você pode ter no máximo 5 máquinas cadastradas.
+    </p>
+</div>
+{% endblock %}

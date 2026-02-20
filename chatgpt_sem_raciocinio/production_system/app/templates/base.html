@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Production System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<!-- <body class="{{ request.session.theme|default:'light' }}"> -->
+<body class="light-mode">
+<button id="theme-toggle" class="btn btn-secondary">
+    🌙 Dark Mode
+</button>
+<header>
+    <h1>Production System</h1>
+
+    {% if user.is_authenticated %}
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/machines/">Máquinas</a>
+            <a href="/productions/">Produções</a>
+            {% if user.is_superuser %}
+                 <a href="/admin/">Admin</a>
+            {% endif %}
+            <form action="/logout/" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </nav>
+    {% endif %}
+    <hr>
+</header>
+<main>
+    {% block content %}{% endblock %}
+</main>
+{% load static %}
+<script src="{% static 'js/theme.js' %}"></script>
+
+</body>
+</html>

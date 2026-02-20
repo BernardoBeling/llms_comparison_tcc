@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="dashboard-grid">
+    <div class="dashboard-item">
+        <h3>Produções em Andamento</h3>
+        <p>{{ ongoing_count }}</p>
+    </div>
+    <div class="dashboard-item">
+        <h3>Máquinas Utilizadas</h3>
+        <p>{{ used_machines }}</p>
+    </div>
+    <div class="dashboard-item">
+        <h3>Máquinas Disponíveis</h3>
+        <p>{{ available_machines }}</p>
+    </div>
+</div>
+
+<h3>Status das Produções</h3>
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th>Máquinas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prod in productions %}
+            <tr>
+                <td><strong>{{ prod.description }}</strong></td>
+                <td><span class="status-badge status-{{ prod.status }}">{{ prod.get_status_display }}</span></td>
+                <td>
+                    <ul style="list-style: none; padding: 0;">
+                        {% for pm in prod.production_machines.all %}
+                        <li style="margin-bottom: 5px;">
+                            {{ pm.machine.model }} ({{ pm.machine.serialnumber }}) - 
+                            <span class="status-badge status-{{ pm.status }}" style="font-size: 0.7rem;">{{ pm.get_status_display }}</span>
+                            
+                            {% if pm.status == 'FINISHED' or pm.status == 'CANCELED' %}
+                                <small style="margin-left: 10px; opacity: 0.7;">Operação: {{ pm.working_time }} min</small>
+                            {% endif %}
+
+                            {% if pm.status == 'ONGOING' %}
+                                <a href="{% url 'machine_finish' pm.pk %}" class="btn btn-success" style="padding: 2px 5px; font-size: 0.7rem;">Finalizar</a>
+                                <a href="{% url 'machine_cancel' pm.pk %}" class="btn btn-danger" style="padding: 2px 5px; font-size: 0.7rem;">Cancelar</a>
+                            {% elif pm.status == 'STANDBY' and prod.status == 'ONGOING' %}
+                                <a href="{% url 'machine_cancel' pm.pk %}" class="btn btn-danger" style="padding: 2px 5px; font-size: 0.7rem;">Cancelar</a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    {% if prod.status == 'STANDBY' %}
+                        <a href="{% url 'production_start' prod.pk %}" class="btn btn-primary">Iniciar</a>
+                        <a href="{% url 'production_cancel' prod.pk %}" class="btn btn-danger">Cancelar</a>
+                    {% elif prod.status == 'ONGOING' %}
+                        <a href="{% url 'production_finish' prod.pk %}" class="btn btn-success">Finalizar</a>
+                        <a href="{% url 'production_cancel' prod.pk %}" class="btn btn-danger">Cancelar</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhuma produção cadastrada. <a href="{% url 'production_create' %}">Cadastrar nova</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

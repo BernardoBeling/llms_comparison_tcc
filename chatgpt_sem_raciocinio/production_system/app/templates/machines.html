@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cadastro de Máquinas</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+
+            {% if field.errors %}
+                <div class="text-danger">
+                    {% for error in field.errors %}
+                        <small>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">
+        Cadastrar
+    </button>
+</form>
+
+<hr>
+
+<h3>Minhas Máquinas</h3>
+
+<ul>
+    {% for machine in machines %}
+        <li>{{ machine.model }} / {{ machine.serialnumber }}</li>
+    {% empty %}
+        <li>Nenhuma máquina cadastrada.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

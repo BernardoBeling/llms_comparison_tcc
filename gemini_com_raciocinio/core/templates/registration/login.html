@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 50px auto;">
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div><label>Email:</label><input type="email" name="username" required></div>
+        <div><label>Senha:</label><input type="password" name="password" required></div>
+        <button type="submit" class="btn btn-blue" style="width: 100%;">Entrar</button>
+    </form>
+    <p style="margin-top: 15px; text-align: center;">Não tem conta? <a href="{% url 'register' %}">Cadastre-se</a></p>
+</div>
+{% endblock %}

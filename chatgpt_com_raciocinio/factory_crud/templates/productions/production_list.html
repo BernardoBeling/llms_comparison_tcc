@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Produções • Factory CRUD{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="h1">Produções</h1>
+    <p class="muted">Não é permitido cadastrar produção sem máquinas associadas.</p>
+  </div>
+  <div class="actions">
+    <a class="btn btn-primary" href="{% url 'production_create' %}">Cadastrar Produção</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descrição</th>
+          <th>Status</th>
+          <th>Qtd.</th>
+          <th>Máquinas (working_time)</th>
+          <th>Criada em</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productions %}
+          <tr>
+            <td>#{{ p.id }}</td>
+            <td>{{ p.description }}</td>
+            <td><span class="badge badge-{{ p.status|lower }}">{{ p.status }}</span></td>
+            <td>{{ p.quantity }}</td>
+
+            <td>
+              {% for pm in p.production_machines.all %}
+                <div class="muted">
+                  {{ pm.machine.model }} / {{ pm.machine.serialnumber }} —
+                  <strong>{{ pm.working_time }}</strong> min
+                </div>
+              {% empty %}
+                <span class="muted">-</span>
+              {% endfor %}
+            </td>
+
+            <td>{{ p.created_at }}</td>
+            <td><a class="link" href="{% url 'production_detail' p.id %}">Detalhes</a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="muted">Nenhuma produção cadastrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

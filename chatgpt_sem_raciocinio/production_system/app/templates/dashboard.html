@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<p><strong>Produções em andamento:</strong> {{ ongoing_productions_count }}</p>
+<p><strong>Máquinas utilizadas:</strong> {{ used_machines_count }}</p>
+<p><strong>Máquinas disponíveis:</strong> {{ available_machines_count }}</p>
+
+<hr>
+
+{% for production in productions %}
+  <h3>{{ production.description }} ({{ production.status }})</h3>
+
+  <ul>
+    {% for pm in production.productionmachine_set.all %}
+    {% if pm.status == 'STANDBY' %}
+    <form method="post" action="{% url 'start_machine' pm.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Iniciar Máquina</button>
+    </form>
+{% endif %}
+      <li>
+         <li>
+                <strong>{{ pm.machine.model }} / {{ pm.machine.serialnumber }}</strong><br>
+
+                Status: {{ pm.status }}<br>
+
+                Tempo de operação:
+                {% if pm.started_at is None %}
+    Não iniciado
+{% elif pm.status == 'ONGOING' %}
+    Em execução
+{% else %}
+    {{ pm.working_time }} min
+{% endif %}
+            </li>
+        - {{ pm.status }}
+
+        {% if pm.status not in 'FINISHED CANCELED' %}
+            <form method="post" action="{% url 'cancel_production_machine' pm.id %}">
+                {% csrf_token %}
+                <button style="color:red;">Cancelar Máquina</button>
+            </form>
+
+            <form method="post" action="{% url 'finish_production_machine' pm.id %}">
+                {% csrf_token %}
+                <button style="color:green;">Finalizar Máquina</button>
+            </form>
+            {% endif %}
+      </li>
+      
+    {% endfor %}
+  </ul>
+  {% if production.status not in 'FINISHED CANCELED' %}
+            <form method="post" action="{% url 'cancel_production' production.id %}">
+            {% csrf_token %}
+            <button style="color:red;">Cancelar Produção</button>
+            </form>
+
+            <form method="post" action="{% url 'finish_production' production.id %}">
+            {% csrf_token %}
+            <button style="color:green;">Finalizar Produção</button>
+            </form>
+        {% endif %}
+{% endfor %}
+
+{% endblock %}

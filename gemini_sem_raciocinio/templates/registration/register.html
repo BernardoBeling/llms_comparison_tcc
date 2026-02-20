@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 50px auto;">
+    <h2>Criar Nova Conta</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div style="margin-bottom: 15px;">
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.errors %}
+                    <p style="color: red; font-size: 0.8rem;">{{ field.errors.as_text }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-blue">Registrar</button>
+    </form>
+    <p style="margin-top: 15px;">Já tem uma conta? <a href="{% url 'login' %}">Faça login aqui</a></p>
+</div>
+{% endblock %}

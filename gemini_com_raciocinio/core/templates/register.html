@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 50px auto;">
+    <h2>Criar Conta</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div><label>Nome Completo:</label><input type="text" name="name" required></div>
+        <div><label>CNPJ:</label><input type="text" name="cnpj" required></div>
+        <div><label>Email:</label><input type="email" name="email" required></div>
+        <div><label>Senha:</label><input type="password" name="password" required></div>
+        <button type="submit" class="btn btn-green" style="width: 100%;">Cadastrar</button>
+    </form>
+</div>
+{% endblock %}

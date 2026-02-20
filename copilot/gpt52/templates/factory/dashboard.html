@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="stat__label">Produções em andamento (ONGOING)</div>
+      <div class="stat__value">{{ ongoing_count }}</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Máquinas utilizadas</div>
+      <div class="stat__value">{{ used_machines }}</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Máquinas disponíveis</div>
+      <div class="stat__value">{{ available_machines }}</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    <h2 style="margin: 0 0 10px 0;">Status de todas as produções</h2>
+
+    {% if productions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in productions %}
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td>{{ p.description }}</td>
+              <td>{{ p.quantity }}</td>
+              <td><span class="badge badge--{{ p.status }}">{{ p.status }}</span></td>
+              <td>
+                <a class="btn btn--ghost" href="{% url 'production_detail' production_id=p.id %}">Abrir</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhuma produção cadastrada ainda.</p>
+    {% endif %}
+  </div>
+{% endblock %}

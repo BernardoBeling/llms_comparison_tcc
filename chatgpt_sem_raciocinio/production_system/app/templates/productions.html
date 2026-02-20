@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cadastro de Produção</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <p>
+        {{ form.description.label_tag }}<br>
+        {{ form.description }}
+    </p>
+
+    <p>
+        {{ form.quantity.label_tag }}<br>
+        {{ form.quantity }}
+    </p>
+
+    <h3>Selecione as máquinas</h3>
+    {{ form.machines }}
+
+    <br><br>
+    <button type="submit">Criar Produção</button>
+</form>
+{% endblock %}
