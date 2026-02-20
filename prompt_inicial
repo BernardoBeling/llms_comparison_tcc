@@ -1,0 +1,111 @@
+###Instrução###
+
+Assuma o papel de um Engenheiro de Software Sênior, com experiência sólida em sistemas web CRUD, Python, Django, bancos de dados relacionais e aplicações conteinerizadas com Docker.
+
+Sua tarefa é projetar e implementar um sistema web CRUD com interface visual, seguindo rigorosamente todos os requisitos, restrições e regras de negócio descritos abaixo. 
+Você DEVE respeitar todas as instruções. Caso algum requisito esteja ambíguo ou incompleto, você deve me fazer perguntas antes de prosseguir.
+
+Pense passo a passo, decompondo o problema em partes menores (modelagem, regras de negócio, backend, frontend, infraestrutura e documentação) antes de apresentar a solução final.
+
+###Tecnologias###
+
+- Backend e migrations: Django (Python)
+- Banco de dados: SQLite3
+- Frontend: HTML + CSS + JS
+- Conteinerização: Docker e Docker Compose
+
+###Modelos e Banco de Dados###
+
+Todos os modelos implementados devem herdar um “Base Model”.
+
+- Base model:
+  - id (NUMBER, autoincrement)
+  - created_at (TIMESTAMP)
+  - updated_at (TIMESTAMP)
+  - deleted_at (TIMESTAMP, soft delete, default null)
+
+- User:
+  - name (VARCHAR)
+  - email (VARCHAR)
+  - cnpj (VARCHAR)
+
+- Production:
+  - description (VARCHAR)
+  - quantity (NUMBER)
+  - user_id (NUMBER)
+  - status (VARCHAR)
+  - started_at (TIMESTAMP)
+  - finished_at (TIMESTAMP)
+  - canceled_at (TIMESTAMP)
+
+  Status possíveis:
+  - “STANDBY”
+  - “ONGOING”
+  - “FINISHED”
+  - “CANCELED”
+
+- ProductionMachine:
+  - production_id (NUMBER)
+  - machine_id (NUMBER)
+  - status (VARCHAR)
+  - started_at (TIMESTAMP)
+  - finished_at (TIMESTAMP) 
+  - canceled_at (TIMESTAMP)
+
+  Status possíveis:
+  - “STANDBY”
+  - “ONGOING”
+  - “HALT”
+  - “FINISHED”
+  - “CANCELED”
+
+- Machine:
+  - model (VARCHAR)
+  - serialnumber (VARCHAR)
+  - owner_user_id (NUMBER)
+
+###Requisitos Funcionais###
+
+1. O sistema deve suportar múltiplos usuários.
+2. Cada usuário pode cadastrar até cinco máquinas, informando manualmente o modelo e o número de série.
+3. Não é permitido cadastrar uma produção sem máquinas associadas.
+4. Caso uma produção tenha mais de uma máquina associada, o usuário pode cancelar a execução em uma máquina específica, sem alterar o estado geral da produção e das outras máquinas.
+5. Um usuário pode CANCELAR uma produção, cancelando simultaneamente a execução de todas as máquinas associadas.
+6. O estado de uma produção só pode ser definido como FINALIZADA quando todas as máquinas associadas apresentarem status diferente de STANDBY e ONGOING.
+7. O sistema deve utilizar os mecanismos nativos de autenticação providos pelo framework Django.
+
+###Restrições de Negócio###
+
+1. Não é permitido cadastrar máquinas com serialnumber duplicado.
+2. Um usuário, ao cadastrar uma produção, só pode selecionar máquinas que sejam de sua propriedade.
+3. Um usuário não pode associar a uma produção uma máquina que já esteja vinculada a outra produção que ainda não foi finalizada ou cancelada.
+
+###Requisitos de Interface###
+
+1. A interface deve seguir um padrão Light Mode.
+2. Possuir uma tela de Cadastro de Máquinas.
+3. Possuir uma tela de Cadastro de Produções.
+4. Possuir uma tela home page, na área logada, estilo dashboard onde mostre o número de produções em andamento, número de máquinas utilizadas e disponíveis e o status de todas as produções cadastradas.
+5. Ao selecionar máquinas para uma produção, devem ser exibidos checkboxes identificados no formato "MODEL / SERIALNUMBER".
+6. No cadastro de produções, exibir apenas máquinas disponíveis, respeitando as restrições de negócio.
+7. Utilizar tons de vermelho para botões de cancelamento.
+8. Utilizar tons de verde para botões de finalização.
+
+###Requisitos de Documentação###
+
+1. Você DEVE criar um arquivo README.md explicando, de forma clara e sequencial, como instalar todas as dependências e executar o sistema sem dificuldades.
+2. A documentação deve servir para sistemas Windows, MacOS e Linux.
+3. Você deve descrever todos os passos para montar e rodar o sistema em todas a plataformas.
+4. Insira links confiáveis caso downloads sejam necessários.
+
+###Formato da Resposta###
+
+Você DEVE fazer perguntas caso encontre ambiguidades ou tenha dúvidas sobre o sistema. Quando estiver satisfeito você DEVE retornar a solução organizada da seguinte forma:
+
+1. Visão geral da estrutura de pastas do projeto e arquivos necessários
+2. Blocos de códigos com o respectivo nome do arquivo 
+3. Dockerfile e docker-compose.yml
+4. Conteúdo completo do README.md
+
+Responda de forma técnica, clara e objetiva. Nunca abrevie ou resuma trechos de código em suas respostas.
+

@@ -1,0 +1,41 @@
+###Instrução###
+
+Você deve atuar como Engenheiro de Software Sênior responsável por evoluir o sistema já desenvolvido.
+
+###Objetivo###
+Implementar novas funcionalidades de forma incremental, preservando integralmente o comportamento existente, as regras de negócio e a arquitetura previamente definida.
+
+###Restrições###
+- Todos os requisitos funcionais e restrições de negócio previamente definidos continuam válidos.
+- Nenhuma funcionalidade existente deve ser removida ou alterada, exceto quando explicitamente solicitado.
+- As alterações devem ser incrementais e retrocompatíveis.
+
+###Requisitos Incrementais###
+
+1. Implementação de usuários premium
+   1.1 Adicionar o campo `is_premium` na tabela `User`, do tipo BOOLEAN, com valor padrão definido como `false`.
+   1.2 Ajustar a regra de negócio que limita o cadastro de máquinas por usuário, permitindo:
+       - até 5 máquinas para usuários não premium;
+       - até 10 máquinas para usuários premium.
+   1.3 Implementar, no painel administrativo do Django, a funcionalidade que permita a alteração do valor do campo `is_premium` para usuários específicos.
+   1.4 Garantir que apenas o usuário “admin” possa alterar o status de um usuário para premium ou não premium por meio do painel administrativo.
+
+2. Cálculo do tempo de operação das máquinas em produções
+   2.1 Adicionar o campo `working_time` na entidade `ProductionMachine`, responsável por armazenar o tempo total de operação da máquina em uma produção, expresso em minutos.
+   2.2 O valor de `working_time` deve ser calculado automaticamente com base na diferença temporal entre:
+       - os campos `started_at` e `finished_at`, quando a produção for finalizada; ou
+       - os campos `started_at` e `canceled_at`, quando a produção ou a associação for cancelada.
+   2.3 O cálculo deve considerar apenas períodos válidos de execução, respeitando o ciclo de vida previamente definido para produções e máquinas.
+
+3. Implementar a funcionalidade que permita ao usuário selecionar o tema visual da interface entre os modos Light Mode e Dark Mode.
+
+4. Adicionar na interface, na lista de produções, o working_time de cada máquina vinculada àquela produção.
+
+###Formato da Resposta###
+
+Você DEVE fazer perguntas caso encontre ambiguidades ou tenha dúvidas sobre o sistema. Quando estiver satisfeito você DEVE retornar a solução organizada da seguinte forma:
+
+1. Códigos atualizados de todos os arquivos que necessitem alteração
+2. Passo a passo detalhado para implementar as alterações em produção
+
+Responda de forma técnica, clara e objetiva. Nunca abrevie ou resuma trechos de código em suas respostas.
